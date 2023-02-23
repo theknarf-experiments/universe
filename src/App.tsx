@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { solarsystem, calculateInitialPlanetData } from './initialData';
+import { useControls } from 'leva'
 
 const animationSpeed = 1;
 
@@ -28,6 +29,18 @@ const App : React.FC = () => {
 	const [ myCanvas ] = useInitSolarsystemRef(solarsystemRef);
 	const [ planetinfo, setPlanetInfo ] = useState([]);
 	const [ tick, setTick ] = useState(0);
+	const { name } = useControls('search', {
+		name: '',
+	});
+	const { zoom, running } = useControls({
+		zoom: {
+			value: 2,
+			min: 1,
+			max: 10,
+			step: 1,
+		},
+		running: true,
+	});
 
 	const frame = useRef(null);
 
@@ -47,15 +60,14 @@ const App : React.FC = () => {
 		return () => cancelAnimationFrame(frame.current);
 	}, []);
 
-
 	const drag = useRef({ initialX: 0, initialY: 0, down: false });
 
-	const startStop = () => {
-		solarsystemRef.current?.toggleAnimation(animationSpeed);
-	}
+	useEffect(() => {
+		solarsystemRef.current?.setAnimation(running, animationSpeed);
+	}, [running]);
 
-	const planetnameOnChange = (event) => {
-		solarsystemRef.current.focusOnPlanet(event.target.value);
+	useEffect(() => {
+		solarsystemRef.current.focusOnPlanet(name);
 
 		solarsystemRef.current.hooks['planetinfo'] = {
 			'run': function(that) {
@@ -72,15 +84,12 @@ const App : React.FC = () => {
 				setPlanetInfo([]);
 			}
 		};	
-	}
+	}, [name]);
 
-	const zoomOnChange = (event) => {
+	useEffect(() => {
 		const zoomK = 100 / solarsystemRef.current.initialZoom;
-
-		if(event.target.value !== '') {
-			solarsystemRef.current.zoom = event.target.value / zoomK
-		}
-	}
+		solarsystemRef.current.zoom = Math.pow(10, zoom) / zoomK
+	}, [zoom]);
 
 	const onmousedown = (e) => {
 		drag.current = {
@@ -131,24 +140,19 @@ const App : React.FC = () => {
 			</style>
 			<canvas ref={myCanvas} id="myCanvas" onMouseUp={onmouseup} onMouseMove={onmousemove} onMouseDown={onmousedown} />
 
-			<div style={{ right: '0', position: 'fixed', margin: '50px' }} className="panel">
-				<input placeholder="Planet name OR sun" onChange={planetnameOnChange} />
-				<div>{(planetinfo||[]).map((info,i) => (
-					<div key={i}>{info}</div>
-				))}</div>
-			</div>
-
 			<div style={{ bottom: '0', right: '0', position: 'fixed', margin: '50px' }}>
+				<h2>Search</h2>
 				<div>
-					<input placeholder="zoom" defaultValue={100} onChange={zoomOnChange} />
+				{(planetinfo||[]).map((info,i) => (
+					<div key={i}>{info}</div>
+				))}
 				</div>
-				<div>
-					<input type="button" value="Start/Stop" onClick={startStop} />
-				</div>
+				<h2>Current X/Y</h2>
 				<div>
 					<div>X: {-Math.floor(solarsystemRef.current?.x)}</div>
 					<div>Y: { Math.floor(solarsystemRef.current?.y)}</div>
 				</div>
+				<h2>Info</h2>
 				<div>
 					Frame: {solarsystemRef.current?.frames}
 				</div>

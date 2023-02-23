@@ -86,11 +86,12 @@ export function solarsystem(cxt : any, planets : any)
 		this.animation = null;
 	}
 	
-	this.toggleAnimation = function(speed : number)
+	this.setAnimation = function(running : boolean, speed : number = 1)
 	{
-		if(this.animation == null)
-		{
-			this.startAnimation(speed);
+		if(running) {
+			// Check that this.animation is null so that we don't start it twice
+			if(this.animation === null)
+				this.startAnimation(speed);
 		} else {
 			this.stopAnimation();
 		}
