@@ -3849,6 +3849,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bitecs@npm:^0.3.38":
+  version: 0.3.38
+  resolution: "bitecs@npm:0.3.38"
+  checksum: 8e77f98fc1c180bbd0f05e83e1926e5f65bdb941d8060886a5c43b61cf139d0448e31f6037bb6d5216d3e825372bacb9283a00b2d482d769d99c37bf3e08bcb2
+  languageName: node
+  linkType: hard
+
 "bluebird@npm:^3.5.5":
   version: 3.7.2
   resolution: "bluebird@npm:3.7.2"
@@ -12133,6 +12140,7 @@ __metadata:
     "@types/node": ^16.7.13
     "@types/react": ^17.0.20
     "@types/react-dom": ^17.0.9
+    bitecs: ^0.3.38
     fbjs: ^3.0.2
     leva: ^0.9.34
     react: ^17.0.2

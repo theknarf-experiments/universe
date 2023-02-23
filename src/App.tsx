@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { solarsystem, calculateInitialPlanetData } from './initialData';
-import { useControls } from 'leva'
+import { useControls } from 'leva';
+import './index.css';
 
 const animationSpeed = 1;
 
@@ -13,10 +14,13 @@ const useInitSolarsystemRef = (solarsystemRef : any) => {
 
 		cxt.canvas.width  = window.innerWidth;
 		cxt.canvas.height = window.innerHeight;
+		
+		const { initData, world } = calculateInitialPlanetData();
 
 		solarsystemRef.current = new solarsystem(
 			cxt,
-			calculateInitialPlanetData()
+			initData,
+			world,
 		);
 		solarsystemRef.current.startAnimation(animationSpeed);
 	}, []);
@@ -122,22 +126,6 @@ const App : React.FC = () => {
 
 	return (
 		<>
-			<style>
-			{`
-				html, body {
-					margin: 0;
-					padding: 0;
-					width: 100%;
-					height: 100%;
-					color: white;
-				}
-
-				canvas {
-					background-color: black;
-					position: fixed;
-				}
-			`}
-			</style>
 			<canvas ref={myCanvas} id="myCanvas" onMouseUp={onmouseup} onMouseMove={onmousemove} onMouseDown={onmousedown} />
 
 			<div style={{ bottom: '0', right: '0', position: 'fixed', margin: '50px' }}>
